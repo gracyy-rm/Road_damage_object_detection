@@ -1,0 +1,14 @@
+img_size: 640
+batch_size: 16
+epochs: 10
+device: 0
+
+models:
+  yolov8: yolov8s.pt
+  rtdetr: rtdetr-l.pt
+
+faster_rcnn:
+  learning_rate: 0.001
+  weight_decay: 0.0005
+  batch_size: 4
+  epochs: 20

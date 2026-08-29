@@ -1,0 +1,11 @@
+# Ignore output and run directories
+outputs/
+runs/
+
+# Ignore PyTorch model weights
+*.pt
+*.pth
+
+# Ignore Python cache
+__pycache__/
+*.pyc

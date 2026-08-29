@@ -1,0 +1,14 @@
+path: /kaggle/input/datasets/aliabdelmenam/rdd-2022/RDD_SPLIT
+
+train: train/images
+val: val/images
+test: test/images
+
+nc: 5
+
+names:
+  0: longitudinal crack
+  1: transverse crack
+  2: alligator crack
+  3: other corruption
+  4: pothole
