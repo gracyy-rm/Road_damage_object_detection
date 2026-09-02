@@ -1,14 +1,18 @@
 import json
 from pathlib import Path
 from PIL import Image
+import matplotlib.pyplot as plt
+from tqdm.auto import tqdm
 from ultralytics import YOLO
 
 class YOLOInference:
     def __init__(self, model_path):
         self.model = YOLO(model_path)
 
-    def predict_image(self, image_path, output_path=None, confidence=0.001, visualize=False, save_visualization=False):
+    def predict_image(self, image_path, output_path=None, confidence=0.001, 
+                      visualize=False, save_visualization=False, visualization_path=None):
         image_path = Path(image_path)
+
         with Image.open(image_path) as image:
             image_width, image_height = image.size
 
@@ -25,7 +29,7 @@ class YOLOInference:
                 predictions.append({
                     "class_id": int(class_id),
                     "confidence": float(confidence_score),
-                    "bbox": [float(value) for value in bbox],
+                    "bbox": [float(value) for value in bbox]
                 })
 
         prediction_data = {
@@ -33,7 +37,7 @@ class YOLOInference:
             "image_path": str(image_path),
             "image_width": image_width,
             "image_height": image_height,
-            "predictions": predictions,
+            "predictions": predictions
         }
 
         if output_path is not None:
@@ -42,12 +46,22 @@ class YOLOInference:
             with open(output_path, "w") as file:
                 json.dump(prediction_data, file, indent=4)
 
-        if visualize:
-            annotated_image = result.plot()
+        if visualize or save_visualization:
+            annotated_image = result.plot()[..., ::-1]
+
+            if visualize:
+                plt.figure(figsize=(12, 8))
+                plt.imshow(annotated_image)
+                plt.axis("off")
+                plt.show()
+
             if save_visualization:
-                visualization_path = image_path.parent / f"{image_path.stem}_prediction.jpg"
-                Image.fromarray(annotated_image[..., ::-1]).save(visualization_path)
-            return prediction_data, annotated_image
+                if visualization_path is None:
+                    visualization_path = image_path.parent / f"{image_path.stem}_prediction.jpg"
+                
+                visualization_path = Path(visualization_path)
+                visualization_path.parent.mkdir(parents=True, exist_ok=True)
+                Image.fromarray(annotated_image).save(visualization_path)
 
         return prediction_data
 
@@ -57,12 +71,12 @@ class YOLOInference:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         image_paths = sorted(
-            list(images_dir.glob("*.jpg")) + 
-            list(images_dir.glob("*.jpeg")) + 
+            list(images_dir.glob("*.jpg")) +
+            list(images_dir.glob("*.jpeg")) +
             list(images_dir.glob("*.png"))
         )
 
-        for image_path in image_paths:
+        for image_path in tqdm(image_paths, desc="Generating predictions"):
             output_path = output_dir / f"{image_path.stem}.json"
             self.predict_image(image_path=image_path, output_path=output_path, confidence=confidence)
 
