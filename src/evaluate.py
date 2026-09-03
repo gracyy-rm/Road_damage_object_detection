@@ -334,18 +334,27 @@ class ImageEvaluator:
 
         return results
     
-    def plot(self,confidence_threshold=0.25,class_names=None):
-        image_path=self.gt_data["image_path"]
+    def plot(self, confidence_threshold=0.25, class_names=None):
 
-        image=Image.open(image_path).convert("RGB")
+        CLASS_COLORS = {
+            0: "red",
+            1: "blue",
+            2: "green",
+            3: "orange",
+            4: "purple"
+        }
 
-        predictions=[
+        image_path = self.gt_data["image_path"]
+
+        image = Image.open(image_path).convert("RGB")
+
+        predictions = [
             prediction
             for prediction in self.pred_data["predictions"]
-            if prediction["confidence"]>=confidence_threshold
+            if prediction["confidence"] >= confidence_threshold
         ]
 
-        fig,axes=plt.subplots(1,2,figsize=(16,8))
+        fig, axes = plt.subplots(1, 2, figsize=(16, 8))
 
         # Ground Truth
         axes[0].imshow(image)
@@ -353,20 +362,24 @@ class ImageEvaluator:
         axes[0].axis("off")
 
         for annotation in self.gt_data["annotations"]:
-            x1,y1,x2,y2=annotation["bbox"]
-            class_id=annotation["class_id"]
 
-            rectangle=patches.Rectangle(
-                (x1,y1),
-                x2-x1,
-                y2-y1,
+            x1, y1, x2, y2 = annotation["bbox"]
+            class_id = annotation["class_id"]
+
+            color = CLASS_COLORS.get(class_id, "white")
+
+            rectangle = patches.Rectangle(
+                (x1, y1),
+                x2 - x1,
+                y2 - y1,
                 fill=False,
-                linewidth=2
+                linewidth=2,
+                edgecolor=color
             )
 
             axes[0].add_patch(rectangle)
 
-            class_name=(
+            class_name = (
                 class_names[class_id]
                 if class_names is not None
                 else str(class_id)
@@ -374,10 +387,14 @@ class ImageEvaluator:
 
             axes[0].text(
                 x1,
-                max(0,y1-5),
+                max(0, y1 - 5),
                 class_name,
                 fontsize=10,
-                bbox=dict(alpha=0.7)
+                color="white",
+                bbox=dict(
+                    facecolor=color,
+                    alpha=0.7
+                )
             )
 
         # Predictions
@@ -388,34 +405,42 @@ class ImageEvaluator:
         axes[1].axis("off")
 
         for prediction in predictions:
-            x1,y1,x2,y2=prediction["bbox"]
-            class_id=prediction["class_id"]
-            confidence=prediction["confidence"]
 
-            rectangle=patches.Rectangle(
-                (x1,y1),
-                x2-x1,
-                y2-y1,
+            x1, y1, x2, y2 = prediction["bbox"]
+            class_id = prediction["class_id"]
+            confidence = prediction["confidence"]
+
+            color = CLASS_COLORS.get(class_id, "white")
+
+            rectangle = patches.Rectangle(
+                (x1, y1),
+                x2 - x1,
+                y2 - y1,
                 fill=False,
-                linewidth=2
+                linewidth=2,
+                edgecolor=color
             )
 
             axes[1].add_patch(rectangle)
 
-            class_name=(
+            class_name = (
                 class_names[class_id]
                 if class_names is not None
                 else str(class_id)
             )
 
-            label=f"{class_name} {confidence:.2f}"
+            label = f"{class_name} {confidence:.2f}"
 
             axes[1].text(
                 x1,
-                max(0,y1-5),
+                max(0, y1 - 5),
                 label,
                 fontsize=10,
-                bbox=dict(alpha=0.7)
+                color="white",
+                bbox=dict(
+                    facecolor=color,
+                    alpha=0.7
+                )
             )
 
         plt.tight_layout()
@@ -427,7 +452,9 @@ class DatasetEvaluator:
         self.pred_dir=Path(pred_dir)
         self.iou_threshold=iou_threshold
         self.data=self._load_dataset()
-        self.df=None
+        self.overall_df=None
+        self.per_class_df=None
+        self.ap_df=None
 
     def _load_dataset(self):
         data={}
@@ -861,6 +888,22 @@ class DatasetEvaluator:
             ]
             for result in per_class_results
         ]
+        self.per_class_df = pd.DataFrame(
+            per_class_table,
+            columns=[
+                "Confidence",
+                "Class"
+                "GT",
+                "Predictions",
+                "TP",
+                "FP",
+                "FN",
+                "Precision",
+                "Recall",
+                "F1",
+                "Mean IoU"
+            ]
+        )
 
         print("\nDATASET-LEVEL PER-CLASS METRICS\n")
         print(tabulate(
@@ -880,6 +923,15 @@ class DatasetEvaluator:
             ]
             for result in ap_results
         ]
+        self.ap_df = pd.DataFrame(
+                ap_table,
+                columns=[
+                    "Class",
+                    "IoU",
+                    "AP"
+                ]
+            )
+        
 
         print("\nDATASET-LEVEL AP\n")
         print(tabulate(
