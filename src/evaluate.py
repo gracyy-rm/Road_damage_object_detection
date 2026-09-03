@@ -7,6 +7,7 @@ import matplotlib.patches as patches
 from PIL import Image
 import random
 import numpy as np
+import pandas as pd
 
 class ImageEvaluator:
 
@@ -426,6 +427,7 @@ class DatasetEvaluator:
         self.pred_dir=Path(pred_dir)
         self.iou_threshold=iou_threshold
         self.data=self._load_dataset()
+        self.df=None
 
     def _load_dataset(self):
         data={}
@@ -818,6 +820,21 @@ class DatasetEvaluator:
             for result in overall_results
         ]
 
+        self.df = pd.DataFrame(
+            overall_table,
+            columns=[
+                "Confidence",
+                "GT",
+                "Predictions",
+                "TP",
+                "FP",
+                "FN",
+                "Precision",
+                "Recall",
+                "F1",
+                "Mean IoU"
+            ]
+        )
         print("\nDATASET-LEVEL OVERALL METRICS\n")
         print(tabulate(
             overall_table,
