@@ -892,7 +892,7 @@ class DatasetEvaluator:
             per_class_table,
             columns=[
                 "Confidence",
-                "Class"
+                "Class",
                 "GT",
                 "Predictions",
                 "TP",
