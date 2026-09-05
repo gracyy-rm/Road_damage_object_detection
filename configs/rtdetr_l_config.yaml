@@ -1,0 +1,21 @@
+model: rtdetr-l.pt
+
+imgsz: 640
+batch: 16
+
+epochs: 30
+patience: 10
+
+device: 0
+seed: 42
+deterministic: false
+
+pretrained: true
+plots: true
+
+optimizer: auto
+
+lr0: 0.01
+lrf: 0.01
+
+cos_lr: true
