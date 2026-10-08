@@ -14,8 +14,8 @@ class YOLOInference:
         self,
         image_path: str | Path,
         output_path: str | Path | None = None,
-        confidence: float = 0.1,
-        iou_threshold: float = 0.35,
+        confidence: float = 0.05,
+        iou_threshold: float = 0.60,
         visualize: bool = False,
         save_visualization: bool = False,
         visualization_path: str | Path | None = None,
@@ -25,6 +25,7 @@ class YOLOInference:
             source=str(image_path),
             conf=confidence,
             iou=iou_threshold,
+            agnostic_nms=False,
             verbose=False,
         )
         result = results[0]
@@ -77,8 +78,8 @@ class YOLOInference:
         self,
         images_dir: str | Path,
         output_dir: str | Path,
-        confidence: float = 0.1,
-        iou_threshold: float = 0.35,
+        confidence: float = 0.05,
+        iou_threshold: float = 0.60,
     ) -> None:
         images_dir = Path(images_dir)
         output_dir = Path(output_dir)
