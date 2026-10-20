@@ -40,8 +40,8 @@ class ModelInference:
         self,
         image_path: Union[str, Path],
         output_path: Optional[Union[str, Path]] = None,
-        confidence: float = 0.05,
-        iou_threshold: float = 0.60,
+        confidence: float = 0.1,
+        iou_threshold: float = 0.5,
         agnostic_nms: bool = False,
         max_det: int = 300,
         visualize: bool = False,
@@ -56,11 +56,15 @@ class ModelInference:
         predict_kwargs = {
             "source": str(image_path),
             "conf": confidence,
-            "iou": iou_threshold,
-            "agnostic_nms": agnostic_nms,
             "max_det": max_det,
             "verbose": False,
         }
+
+        if isinstance(self.model, YOLO):
+            predict_kwargs.update({
+                "iou": iou_threshold,
+                "agnostic_nms": agnostic_nms,
+        })
         if self.device is not None:
             predict_kwargs["device"] = self.device
 
@@ -120,8 +124,8 @@ class ModelInference:
         self,
         images_dir: Union[str, Path],
         output_dir: Union[str, Path],
-        confidence: float = 0.05,
-        iou_threshold: float = 0.60,
+        confidence: float = 0.1,
+        iou_threshold: float = 0.5,
         agnostic_nms: bool = False,
         max_det: int = 300,
     ) -> None:
