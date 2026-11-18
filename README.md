@@ -123,6 +123,8 @@ The following table compares all three architectures using the same evaluation m
 Based on the comparative evaluation, **YOLOv8-L was selected as the preferred model** for this project.
 
 The selection considers the overall detection performance, balancing precision, recall, F1-score, and bounding box localization quality.
+<img width="708" height="162" alt="image" src="https://github.com/user-attachments/assets/b2d74439-7fff-4c3d-a77e-c05f66debeaa" />
+
 
 ### Comparative Observations
 
