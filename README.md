@@ -97,6 +97,9 @@ Three object detection architectures were trained and evaluated using a common e
 ### Evaluation Methodology
 
 Rather than relying exclusively on framework-reported validation metrics, I implemented an independent evaluation pipeline to assess model predictions consistently.
+Model evaluation was performed using a custom evaluation pipeline built with my computer vision library, [cv-toolkit](https://github.com/gracyy-rm/cv-toolkit).
+
+The evaluation pipeline supports configurable bounding-box matching using either Intersection over Union (IoU) or Intersection over Smaller area (IoS). For this project, IoS was selected as the matching metric due to the considerable variation in bounding-box sizes across road damage annotations and predictions.
 
 The evaluation process includes:
 
@@ -157,7 +160,7 @@ Road_damage_object_detection/
 │   └── Training and evaluation notebooks
 │
 ├── src/
-│   └── Custom inference and evaluation pipeline
+│   └── Custom inference pipeline
 │
 ├── README.md
 ├── YOLOV8L_EVALUATION_AND_ERROR_ANALYSIS.md
@@ -169,7 +172,9 @@ Road_damage_object_detection/
 - `graphs/` – Dataset distribution and analysis visualizations.
 - `notebooks/` – Model training and experimentation notebooks.
 - `src/` – Custom inference and evaluation pipeline implementation.
-  
+
+**External Dependency**
+- [cv-toolkit](https://github.com/gracyy-rm/cv-toolkit) – Custom computer vision library used for the evaluation pipeline and object detection metric calculations.
 
 
 ## 6. YOLOv8-L: Evaluation and Error Analysis
