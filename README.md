@@ -138,49 +138,47 @@ For detailed class-wise results, error analysis, and model-specific observations
 
 ---
 
-## 5. Repository Structure
+## Repository Structure
 
 ```text
 Road_damage_object_detection/
 │
 ├── assets/
+│   ├── Pothole_low_recall_fn.png
+│   ├── YOLO_l_bestcases.png
+│   ├── annotationn_onconsistencies.png
+│   └── high_fp_model_over_pred.png
 │
-├── configs/
-│   
 ├── graphs/
 │   ├── object_dist_by_class.png
 │   └── spatial_heatmap.png
 │
 ├── notebooks/
-│   ├── yolo-training.ipynb
-│   └── model_evaluation/
+│   └── Training and evaluation notebooks
 │
 ├── src/
+│   └── Custom inference and evaluation pipeline
 │
-├── EVALUATION_AND_ANALYSIS.md
 ├── README.md
+├── YOLOV8L_EVALUATION_AND_ERROR_ANALYSIS.md
 └── requirements.txt
 ```
 
----
+**Key directories:**
+- `assets/` – Visual examples of model predictions, false negatives, false positives, and annotation inconsistencies.
+- `graphs/` – Dataset distribution and analysis visualizations.
+- `notebooks/` – Model training and experimentation notebooks.
+- `src/` – Custom inference and evaluation pipeline implementation.
+  
 
-## 6. Detailed Evaluation and Analysis
 
-The main README provides an overview of the project and model comparison.
+## 6. YOLOv8-L: Evaluation and Error Analysis
 
-For a deeper understanding of the experiments, evaluation methodology, and observed model performance, refer to:
+YOLOv8-L was selected as the preferred model following comparative evaluation of YOLOv8-S, YOLOv8-L, and RT-DETR-L.
 
-**[Comprehensive Quantitative and Qualitative Evaluation](./EVALUATION_AND_ANALYSIS.md)**
+A separate report provides an in-depth analysis of the selected model, including quantitative evaluation, class-wise performance, successful detections, false positives, false negatives, and dataset annotation inconsistencies.
 
-The detailed report covers:
-
-- Evaluation methodology and prediction matching.
-- TP, FP, and FN analysis.
-- Confidence threshold analysis.
-- Bounding box localization performance.
-- Qualitative prediction analysis.
-- Comparative observations across all three architectures.
-
+**[Read YOLOv8-L Evaluation and Error Analysis](./YOLOV8L_EVALUATION_AND_ERROR_ANALYSIS.md)**
 ---
 
 ## 7. Future Scope and Improvements
